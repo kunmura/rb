@@ -13,7 +13,7 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Imageurl'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<img src="/rb/cardillust/<?php echo $card['Card']['imageurl']; ?>" width="50px">
+			<img src="http://googledrive.com/host/0B9JkfxOAK33NLVdZcHdITjBuQ1E/<?php echo $card['Card']['imageurl']; ?>.jpg" width="120px">
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Max Level'); ?></dt>

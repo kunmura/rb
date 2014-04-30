@@ -8,7 +8,7 @@ class DATABASE_CONFIG {
 		'login' => 'fr-adam',
 		'password' => 'pypvnagm5k',
 		'database' => 'fr-adam_rb',
-		'encoding' => 'utf-8'
+		'encoding' => 'utf-8',
 	);
 }
 ?>

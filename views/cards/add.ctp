@@ -3,27 +3,16 @@
 	<fieldset>
  		<legend><?php __('Add Card'); ?></legend>
 	<?php
+		echo $this->Form->input('id', array('type' => 'text'));
 		echo $this->Form->input('name');
-		echo $this->Form->input('imageurl');
-		echo $this->Form->input('max_level');
 		echo $this->Form->input('rare_id');
-		echo $this->Form->input('cost');
-		echo $this->Form->input('atk');
-		echo $this->Form->input('max_atk');
-		echo $this->Form->input('def');
-		echo $this->Form->input('max_def');
-		echo $this->Form->input('agi');
-		echo $this->Form->input('max_agi');
-		echo $this->Form->input('skill1');
-		echo $this->Form->input('skill1_rate');
-		echo $this->Form->input('skill1_max_rate');
-		echo $this->Form->input('skill2');
-		echo $this->Form->input('skill2_rate');
-		echo $this->Form->input('skill2_max_rate');
-		echo $this->Form->input('skill3');
-		echo $this->Form->input('skill3_rate');
-		echo $this->Form->input('skill3_max_rate');
-		echo $this->Form->input('max_awake');
+		echo $this->Form->input('attribute_id');
+		echo $this->Form->input('characteristic_id');
+		echo $this->Form->input('cost', array('value' => '0'));
+		echo $this->Form->input('hp', array('value' => '0'));
+		echo $this->Form->input('atk', array('value' => '0'));
+		echo $this->Form->input('def', array('value' => '0'));
+		echo $this->Form->input('agi', array('value' => '0'));
 		echo $this->Form->input('visible');
 		echo $this->Form->input('creates');
 	?>
