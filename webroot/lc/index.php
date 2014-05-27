@@ -15,7 +15,7 @@
 <body>
 <h2>バトル</h2>
 <div id="map">
-	<form method="post" action="result.php">
+	<form method="post" action="result2.php">
 	<div>
 		<table>
 			<tr>
