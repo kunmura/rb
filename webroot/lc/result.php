@@ -43,8 +43,21 @@
 			}
 		}
 	}
+	drowMap();
 	
 	// シミュレーター
+	++$battle_turn;
+	battleStartLog($battle_turn);
+	battle();
+	drowMap();
+	checkHp();
+	
+	++$battle_turn;
+	battleStartLog($battle_turn);
+	battle();
+	drowMap();
+	checkHp();
+	
 	++$battle_turn;
 	battleStartLog($battle_turn);
 	battle();
@@ -97,7 +110,7 @@
 		for($i=0;$i<count($red_unit_array);$i++){
 			$unit_num+=$red_unit_array[$i];
 		}
-		echo("<p>unit_num:".$unit_num."</p>");
+		//echo("<p>unit_num:".$unit_num."</p>");
 		
 		// 先行の攻撃
 		for($battleturn=0;$battleturn<$unit_num;$battleturn++){
@@ -105,7 +118,7 @@
 				for($i=$tmp_priority_blue_unit_num;$i<count($priority_blue_unit_array);$i++){
 					if($blue_unit_array[$priority_blue_unit_array[$i]]==1){
 						echo('<div class="blue">['.$battleturn.'] 青:'.$priority_blue_unit_array[$i].'の攻撃</div>');
-						echo("<p>battle".$priority_blue_unit_array[$i]."</p>");
+						battleLogic($blue_turn_bool,$priority_blue_unit_array[$i],$priority_array[unitDistance($priority_blue_unit_array[$i])]);
 						// 状態保存と対戦者切り替え
 						$tmp_priority_blue_unit_num=$i+1;
 						$blue_turn_bool=0;
@@ -118,7 +131,7 @@
 				for($j=$tmp_priority_red_unit_num;$j<count($priority_red_unit_array);$j++){
 					if($red_unit_array[$priority_red_unit_array[$j]]==1){
 						echo('<div class="red">['.$battleturn.'] 赤:'.$priority_red_unit_array[$j].'の攻撃</div>');
-						echo("<p>battle".$priority_red_unit_array[$j]."</p>");
+						battleLogic($blue_turn_bool,$priority_red_unit_array[$i],$priority_array[unitDistance($priority_red_unit_array[$i])]);
 						// 状態保存と対戦者切り替え
 						$tmp_priority_red_unit_num=$j+1;
 						$blue_turn_bool=1;
@@ -153,12 +166,51 @@
 		return $distance[$distance_num];
 	}
 	
-	function battleLogic($blue_turn_bool,$atk_unit_num,$def_unit_num,$priority_array){
+	function battleLogic($blue_turn_bool,$atk_unit_num,$priority_array){
+		global $blue_unit_array;
+		global $red_unit_array;
+		global $blue_unit_hp_array;
+		global $red_unit_hp_array;
+		global $DAMAGE_ARRAY;
+
+		$tmp_hit_effect=0;
+		
+		for($i=0;$i<count($priority_array);$i++){
+			
+			if($i<3){
+				$tmp_hit_effect=2;
+			}else if($i<6){
+				$tmp_hit_effect=1;
+			}else if($i<9){
+				$tmp_hit_effect=0;
+			}
+			
+			if($blue_turn_bool){
+				if($red_unit_hp_array[$priority_array[$i]]>0){
+					echo("[".$i."]赤：".$priority_array[$i]."に");
+					echo($DAMAGE_ARRAY[$tmp_hit_effect]."のダメージ！");
+					$red_unit_hp_array[$priority_array[$i]] -= $DAMAGE_ARRAY[$tmp_hit_effect];
+					echo("HP=".$red_unit_hp_array[$priority_array[$i]]);
+					break;
+				}
+			}
+			if(!$blue_turn_bool){
+				if($blue_unit_hp_array[$priority_array[$i]]>0){
+					echo("[".$i."]青：".$priority_array[$i]."に");
+					echo($DAMAGE_ARRAY[$tmp_hit_effect]."のダメージ！");
+					$blue_unit_hp_array[$priority_array[$i]] -= $DAMAGE_ARRAY[$tmp_hit_effect];
+					echo("HP=".$blue_unit_hp_array[$priority_array[$i]]);
+					break;
+				}
+			}
+		}
 	}
 	
 	function drowMap(){
 		global $blue_unit_array;
 		global $red_unit_array;
+		global $blue_unit_hp_array;
+		global $red_unit_hp_array;
 		echo('
 			<div id="map">
 	<div>
@@ -174,7 +226,11 @@
 			<tr>
 				<td>');
 						if($blue_unit_array[2]==1){
-							echo("▲");
+							if($blue_unit_hp_array[2]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -182,7 +238,11 @@
 				</td>
 				<td>');
 						if($blue_unit_array[1]==1){
-							echo("■");
+							if($blue_unit_hp_array[1]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -191,7 +251,11 @@
 				<td>
 					');
 						if($blue_unit_array[0]==1){
-							echo("●");
+							if($blue_unit_hp_array[0]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -200,7 +264,11 @@
 				<td>
 					');
 						if($red_unit_array[0]==1){
-							echo("●");
+							if($red_unit_hp_array[0]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -209,7 +277,11 @@
 				<td>
 					');
 						if($red_unit_array[1]==1){
-							echo("■");
+							if($red_unit_hp_array[1]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -218,7 +290,11 @@
 				<td>
 					');
 						if($red_unit_array[2]==1){
-							echo("▲");
+							if($red_unit_hp_array[2]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -229,7 +305,11 @@
 				<td>
 					');
 						if($blue_unit_array[5]==1){
-							echo("▲");
+							if($blue_unit_hp_array[5]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -238,7 +318,11 @@
 				<td>
 					');
 						if($blue_unit_array[4]==1){
-							echo("■");
+							if($blue_unit_hp_array[4]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -247,7 +331,11 @@
 				<td>
 					');
 						if($blue_unit_array[3]==1){
-							echo("●");
+							if($blue_unit_hp_array[3]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -256,7 +344,11 @@
 				<td>
 					');
 						if($red_unit_array[3]==1){
-							echo("●");
+							if($red_unit_hp_array[3]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -265,7 +357,11 @@
 				<td>
 					');
 						if($red_unit_array[4]==1){
-							echo("■");
+							if($red_unit_hp_array[4]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -274,7 +370,11 @@
 				<td>
 					');
 						if($red_unit_array[5]==1){
-							echo("▲");
+							if($red_unit_hp_array[5]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -285,7 +385,11 @@
 				<td>
 					');
 						if($blue_unit_array[8]==1){
-							echo("▲");
+							if($blue_unit_hp_array[8]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -294,7 +398,11 @@
 				<td>
 					');
 						if($blue_unit_array[7]==1){
-							echo("■");
+							if($blue_unit_hp_array[7]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -303,7 +411,11 @@
 				<td>
 					');
 						if($blue_unit_array[6]==1){
-							echo("●");
+							if($blue_unit_hp_array[6]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -312,7 +424,11 @@
 				<td>
 					');
 						if($red_unit_array[6]==1){
-							echo("●");
+							if($red_unit_hp_array[6]>0){
+								echo("●");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -321,7 +437,11 @@
 				<td>
 					');
 						if($red_unit_array[7]==1){
-							echo("■");
+							if($red_unit_hp_array[7]>0){
+								echo("■");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -330,7 +450,11 @@
 				<td>
 					');
 						if($red_unit_array[8]==1){
-							echo("▲");
+							if($red_unit_hp_array[8]>0){
+								echo("▲");
+							}else{
+								echo("×");
+							}
 						}else{
 							echo("□");
 						}
@@ -343,14 +467,5 @@
 						');
 	}
 ?>
-
-<h2>バトル</h2>
-
-
-<h2>バトルログ</h2>
-<div id="box">
-	<p></p>
-</div>
-
 </body>
 </html>
