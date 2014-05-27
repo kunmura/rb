@@ -46,23 +46,13 @@
 	drowMap();
 	
 	// シミュレーター
+	do{
 	++$battle_turn;
 	battleStartLog($battle_turn);
 	battle();
 	drowMap();
-	checkHp();
-	
-	++$battle_turn;
-	battleStartLog($battle_turn);
-	battle();
-	drowMap();
-	checkHp();
-	
-	++$battle_turn;
-	battleStartLog($battle_turn);
-	battle();
-	drowMap();
-	checkHp();
+	$end_point=checkHp();
+	}while($end_point>0);
 	
 	function checkHp(){
 		global $blue_unit_hp_array;
@@ -76,6 +66,13 @@
 			$red += $red_unit_hp_array[$i];
 		}
 		echo("<p>blue：".$blue." 対 red：".$red."</p>");
+		
+		if($blue<=0){
+			return 0;
+		}else if($red<=0){
+			return 0;
+		}
+		return 1;
 	}
 	
 	function battleStartLog($turn){
@@ -94,7 +91,7 @@
 		global $red_unit_hp_array;
 		
 		$unit_num=0;
-		$blue_turn_bool=1;
+		$blue_turn_bool=0;
 		$tmp_priority_blue_unit_num=0;
 		$tmp_priority_red_unit_num=0;
 		$priority_blue_unit_array = array(2,5,8,1,4,7,0,3,6);
@@ -112,13 +109,13 @@
 		}
 		//echo("<p>unit_num:".$unit_num."</p>");
 		
-		// 先行の攻撃
+		// 攻撃
 		for($battleturn=0;$battleturn<$unit_num;$battleturn++){
 			if($blue_turn_bool){
 				for($i=$tmp_priority_blue_unit_num;$i<count($priority_blue_unit_array);$i++){
-					if($blue_unit_array[$priority_blue_unit_array[$i]]==1){
+					if(($blue_unit_hp_array[$priority_blue_unit_array[$i]]>0)&&($blue_unit_array[$priority_blue_unit_array[$i]]==1)){
 						echo('<div class="blue">['.$battleturn.'] 青:'.$priority_blue_unit_array[$i].'の攻撃</div>');
-						battleLogic($blue_turn_bool,$priority_blue_unit_array[$i],$priority_array[unitDistance($priority_blue_unit_array[$i])]);
+						battleLogic($blue_turn_bool,$priority_blue_unit_array[$i],$priority_array[unitDistance($priority_blue_unit_array[$i])],unitDistance($priority_blue_unit_array[$i]));
 						// 状態保存と対戦者切り替え
 						$tmp_priority_blue_unit_num=$i+1;
 						$blue_turn_bool=0;
@@ -129,9 +126,9 @@
 			}
 			if(!$blue_turn_bool){
 				for($j=$tmp_priority_red_unit_num;$j<count($priority_red_unit_array);$j++){
-					if($red_unit_array[$priority_red_unit_array[$j]]==1){
+					if(($red_unit_hp_array[$priority_red_unit_array[$j]]>0)&&($red_unit_array[$priority_red_unit_array[$j]]==1)){
 						echo('<div class="red">['.$battleturn.'] 赤:'.$priority_red_unit_array[$j].'の攻撃</div>');
-						battleLogic($blue_turn_bool,$priority_red_unit_array[$i],$priority_array[unitDistance($priority_red_unit_array[$i])]);
+						battleLogic($blue_turn_bool,$priority_red_unit_array[$j],$priority_array[unitDistance($priority_red_unit_array[$j])],unitDistance($priority_blue_unit_array[$i]));
 						// 状態保存と対戦者切り替え
 						$tmp_priority_red_unit_num=$j+1;
 						$blue_turn_bool=1;
@@ -166,7 +163,7 @@
 		return $distance[$distance_num];
 	}
 	
-	function battleLogic($blue_turn_bool,$atk_unit_num,$priority_array){
+	function battleLogic($blue_turn_bool,$atk_unit_num,$priority_array,$distance){
 		global $blue_unit_array;
 		global $red_unit_array;
 		global $blue_unit_hp_array;
@@ -177,33 +174,47 @@
 		
 		for($i=0;$i<count($priority_array);$i++){
 			
-			if($i<3){
-				$tmp_hit_effect=2;
-			}else if($i<6){
+			if($distance=="middle"){
 				$tmp_hit_effect=1;
-			}else if($i<9){
-				$tmp_hit_effect=0;
+			}else{
+				if($i<3){
+					$tmp_hit_effect=2;
+				}else if($i<6){
+					$tmp_hit_effect=1;
+				}else if($i<9){
+					$tmp_hit_effect=0;
+				}
 			}
 			
 			if($blue_turn_bool){
 				if($red_unit_hp_array[$priority_array[$i]]>0){
-					echo("[".$i."]赤：".$priority_array[$i]."に");
+					echo("赤：".$priority_array[$i]."に");
 					echo($DAMAGE_ARRAY[$tmp_hit_effect]."のダメージ！");
 					$red_unit_hp_array[$priority_array[$i]] -= $DAMAGE_ARRAY[$tmp_hit_effect];
-					echo("HP=".$red_unit_hp_array[$priority_array[$i]]);
+					$red_unit_hp_array[$priority_array[$i]] = isDeath($red_unit_hp_array[$priority_array[$i]]);
 					break;
 				}
 			}
 			if(!$blue_turn_bool){
 				if($blue_unit_hp_array[$priority_array[$i]]>0){
-					echo("[".$i."]青：".$priority_array[$i]."に");
+					echo("青：".$priority_array[$i]."に");
 					echo($DAMAGE_ARRAY[$tmp_hit_effect]."のダメージ！");
 					$blue_unit_hp_array[$priority_array[$i]] -= $DAMAGE_ARRAY[$tmp_hit_effect];
-					echo("HP=".$blue_unit_hp_array[$priority_array[$i]]);
+					$blue_unit_hp_array[$priority_array[$i]] = isDeath($blue_unit_hp_array[$priority_array[$i]]);
 					break;
 				}
 			}
 		}
+	}
+	
+	function isDeath($hp){
+		if($hp<=0){
+			echo("　(✖_✖)死亡");
+			return 0;
+		}else{
+			echo("　残りHP ".$hp);
+		}
+		return $hp;
 	}
 	
 	function drowMap(){

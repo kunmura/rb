@@ -37,10 +37,10 @@
 					<input type="checkbox" name="blue_0">
 				</td>
 				<td>
-					<input type="checkbox" name="red_0">
+					<input type="checkbox" name="red_0" checked="checked">
 				</td>
 				<td>
-					<input type="checkbox" name="red_1">
+					<input type="checkbox" name="red_1" checked="checked">
 				</td>
 				<td>
 					<input type="checkbox" name="red_2">
@@ -57,10 +57,10 @@
 					<input type="checkbox" name="blue_3">
 				</td>
 				<td>
-					<input type="checkbox" name="red_3">
+					<input type="checkbox" name="red_3" checked="checked">
 				</td>
 				<td>
-					<input type="checkbox" name="red_4">
+					<input type="checkbox" name="red_4" checked="checked">
 				</td>
 				<td>
 					<input type="checkbox" name="red_5">
@@ -80,7 +80,7 @@
 					<input type="checkbox" name="red_6">
 				</td>
 				<td>
-					<input type="checkbox" name="red_7">
+					<input type="checkbox" name="red_7" checked="checked">
 				</td>
 				<td>
 					<input type="checkbox" name="red_8">
@@ -96,13 +96,16 @@
 
 <h2>ルール</h2>
 <div id="box">
-	<p>HP = 5pt</p>
-	<p>● = 近距離の同じラインの敵もしくは近くの敵（同じライン優先）を攻撃</p>
-	<p>● = 与ダメージ（近：3pt 中：2pt 遠：1pt） / AGI：1</p>
-	<p>■ = 中距離の同じラインの敵もしくは近くの敵（同じライン優先）を攻撃</p>
-	<p>■ = 与ダメージ（近：2pt 中：2pt 遠：2pt） / AGI：2</p>
-	<p>▲ = 遠距離の同じラインの敵もしくは近くの敵（同じライン優先）を攻撃</p>
-	<p>▲ = 与ダメージ（近：1pt 中：2pt 遠：3pt） / AGI：3</p>
+	<p>HPは全員5</p>
+	<p>青先行で攻撃はAGIに基づき交互に行う</p>
+	<p>近（●） = 近距離の同じラインの敵もしくは近くの敵（同じ距離とライン優先）を攻撃</p>
+	<p>与ダメージ（近：3pt 中：2pt 遠：1pt） / AGI：1</p>
+	<p>中（■） = 中距離の同じラインの敵もしくは近くの敵（同じ距離とライン優先）を攻撃</p>
+	<p>与ダメージ（近：2pt 中：2pt 遠：2pt） / AGI：2</p>
+	<p>遠（▲） = 遠距離の同じラインの敵もしくは近くの敵（同じ距離とライン優先）を攻撃</p>
+	<p>与ダメージ（近：1pt 中：2pt 遠：3pt） / AGI：3</p>
+	<hr>
+	<p>距離によるダメージ減算ありません</p>
 </div>
 
 </body>
