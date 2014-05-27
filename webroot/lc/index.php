@@ -19,7 +19,6 @@
 	<div>
 		<table>
 			<tr>
-				<th></th>
 				<th class="blue">遠</th>
 				<th class="blue">中</th>
 				<th class="blue">近</th>
@@ -28,66 +27,63 @@
 				<th class="red">遠</th>
 			</tr>
 			<tr>
-				<th>0</th>
 				<td>
-					<input type="checkbox" name="long_0">
+					<input type="checkbox" name="blue_2">
 				</td>
 				<td>
-					<input type="checkbox" name="middle_0">
+					<input type="checkbox" name="blue_1">
 				</td>
 				<td>
-					<input type="checkbox" name="short_0">
+					<input type="checkbox" name="blue_0">
 				</td>
 				<td>
-					<input type="checkbox" name="red_short_0">
+					<input type="checkbox" name="red_0">
 				</td>
 				<td>
-					<input type="checkbox" name="red_middle_0">
+					<input type="checkbox" name="red_1">
 				</td>
 				<td>
-					<input type="checkbox" name="red_long_0">
-				</td>
-			</tr>
-			<tr>
-				<th>1</th>
-				<td>
-					<input type="checkbox" name="long_1">
-				</td>
-				<td>
-					<input type="checkbox" name="middle_1">
-				</td>
-				<td>
-					<input type="checkbox" name="short_1">
-				</td>
-				<td>
-					<input type="checkbox" name="red_short_1">
-				</td>
-				<td>
-					<input type="checkbox" name="red_middle_1">
-				</td>
-				<td>
-					<input type="checkbox" name="red_long_1">
+					<input type="checkbox" name="red_2">
 				</td>
 			</tr>
 			<tr>
-				<th>2</th>
 				<td>
-					<input type="checkbox" name="long_2">
+					<input type="checkbox" name="blue_5">
 				</td>
 				<td>
-					<input type="checkbox" name="middle_2">
+					<input type="checkbox" name="blue_4">
 				</td>
 				<td>
-					<input type="checkbox" name="short_2">
+					<input type="checkbox" name="blue_3">
 				</td>
 				<td>
-					<input type="checkbox" name="red_short_2">
+					<input type="checkbox" name="red_3">
 				</td>
 				<td>
-					<input type="checkbox" name="red_middle_2">
+					<input type="checkbox" name="red_4">
 				</td>
 				<td>
-					<input type="checkbox" name="red_long_2">
+					<input type="checkbox" name="red_5">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="checkbox" name="blue_8">
+				</td>
+				<td>
+					<input type="checkbox" name="blue_7">
+				</td>
+				<td>
+					<input type="checkbox" name="blue_6">
+				</td>
+				<td>
+					<input type="checkbox" name="red_6">
+				</td>
+				<td>
+					<input type="checkbox" name="red_7">
+				</td>
+				<td>
+					<input type="checkbox" name="red_8">
 				</td>
 			</tr>
 		</table>
