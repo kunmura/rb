@@ -14,6 +14,8 @@
 </head>
 <body>
 
+<p><a href="./index.php">クエストTOP</a></p>
+
 <?php
 	// 変数定義
 	$blue_unit_array;
@@ -22,6 +24,7 @@
 	$red_unit_hp_array;
 	
 	$MAX_HP = 10;
+	$BOSS_XHP = 2;
 	$DAMAGE_EFFECT_ARRAY["short"] = array(1,4,6);
 	$DAMAGE_EFFECT_ARRAY["middle"] = array(2,4,4);
 	$DAMAGE_EFFECT_ARRAY["long"] = array(2,4,6);
@@ -29,6 +32,13 @@
 	$battle_turn = 0;
 	
 	// POSTデータ格納
+	if(($_POST["boss_bool"])&&(($_POST["boss_num"]))){
+		$BOSS_BOOL=$_POST["boss_bool"];
+		$BOSS_NUM=$_POST["boss_num"];
+		if($BOSS_BOOL){
+			echo('<div class="boss">ボス'.$BOSS_NUM.'のHPは'.$BOSS_XHP.'倍!!</div>');
+		}
+	}
 	for($i=0;$i<3;$i++){
 		for($j=0;$j<3;$j++){
 			if($_POST["blue_".($i+3*$j)]=="on"){
@@ -39,7 +49,16 @@
 			}
 			if($_POST["red_".($i+3*$j)]=="on"){
 				$red_unit_array[$i+3*$j]=1;
-				$red_unit_hp_array[$i+3*$j]=$MAX_HP;
+				if($BOSS_BOOL){
+					// ボス補正
+					if($BOSS_NUM==$i+3*$j){
+						$red_unit_hp_array[$i+3*$j]=$MAX_HP*$BOSS_XHP;
+					}else{
+						$red_unit_hp_array[$i+3*$j]=$MAX_HP;
+					}
+				}else{
+					$red_unit_hp_array[$i+3*$j]=$MAX_HP;
+				}
 			}else{
 				$red_unit_array[$i+3*$j]=0;
 			}

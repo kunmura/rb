@@ -24,6 +24,11 @@ h2{
 .red{
 	background-color:#ffb6c1;
 }
+.boss{
+	background-color:#ff0000;
+	font-size:30px;
+	color:#ffffff;
+}
 
 #box{
 	margin:4px;
