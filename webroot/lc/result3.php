@@ -22,7 +22,9 @@
 	$red_unit_hp_array;
 	
 	$MAX_HP = 10;
-	$DAMAGE_ARRAY = array(0,1,2,3,4,5,6);
+	$DAMAGE_EFFECT_ARRAY["short"] = array(1,4,6);
+	$DAMAGE_EFFECT_ARRAY["middle"] = array(2,4,4);
+	$DAMAGE_EFFECT_ARRAY["long"] = array(2,4,6);
 	
 	$battle_turn = 0;
 	
@@ -96,9 +98,15 @@
 		$tmp_priority_red_unit_num=0;
 		$priority_blue_unit_array = array(2,5,8,1,4,7,0,3,6);
 		$priority_red_unit_array = array(2,5,8,1,4,7,0,3,6);
-		$priority_array["short"] = array(0,3,6,1,4,7,2,5,8);
-		$priority_array["middle"] = array(1,4,7,0,3,6,2,5,8);
-		$priority_array["long"] = array(2,5,8,1,4,7,0,3,6);
+		$priority_array["short"][0] = array(0,3,6,1,4,7,2,5,8);
+		$priority_array["short"][1] = array(3,0,6,4,1,7,5,2,8);
+		$priority_array["short"][2] = array(6,0,3,7,1,4,8,2,5);
+		$priority_array["middle"][0] = array(1,4,7,0,3,6,2,5,8);
+		$priority_array["middle"][1] = array(4,1,7,3,0,6,5,2,8);
+		$priority_array["middle"][2] = array(7,1,4,6,0,3,8,2,5);
+		$priority_array["long"][0] = array(2,5,8,1,4,7,0,3,6);
+		$priority_array["long"][1] = array(5,2,8,4,1,7,3,0,6);
+		$priority_array["long"][2] = array(8,2,5,7,1,4,6,0,3);
 		
 		// ユニット全体の数
 		for($i=0;$i<count($blue_unit_array);$i++){
@@ -113,9 +121,10 @@
 		for($battleturn=0;$battleturn<$unit_num;$battleturn++){
 			if($blue_turn_bool){
 				for($i=$tmp_priority_blue_unit_num;$i<count($priority_blue_unit_array);$i++){
-					if(($blue_unit_hp_array[$priority_blue_unit_array[$i]]>0)&&($blue_unit_array[$priority_blue_unit_array[$i]]==1)){
-						echo('<div class="blue">['.$battleturn.'] 青:'.$priority_blue_unit_array[$i].'の攻撃</div>');
-						battleLogic($blue_turn_bool,$priority_blue_unit_array[$i],$priority_array[unitDistance($priority_blue_unit_array[$i])],unitDistance($priority_blue_unit_array[$i]));
+					$myUnit = $priority_blue_unit_array[$i];
+					if(($blue_unit_hp_array[$myUnit]>0)&&($blue_unit_array[$myUnit]==1)){
+						echo('<div class="blue">['.$battleturn.'] 青('.$myUnit.')の攻撃</div>');
+						battleLogic($blue_turn_bool,$myUnit,$priority_array[unitDistance($myUnit)][unitLine($myUnit)],unitDistance($myUnit));
 						// 状態保存と対戦者切り替え
 						$tmp_priority_blue_unit_num=$i+1;
 						$blue_turn_bool=0;
@@ -126,9 +135,10 @@
 			}
 			if(!$blue_turn_bool){
 				for($j=$tmp_priority_red_unit_num;$j<count($priority_red_unit_array);$j++){
-					if(($red_unit_hp_array[$priority_red_unit_array[$j]]>0)&&($red_unit_array[$priority_red_unit_array[$j]]==1)){
-						echo('<div class="red">['.$battleturn.'] 赤:'.$priority_red_unit_array[$j].'の攻撃</div>');
-						battleLogic($blue_turn_bool,$priority_red_unit_array[$j],$priority_array[unitDistance($priority_red_unit_array[$j])],unitDistance($priority_blue_unit_array[$i]));
+					$myUnit = $priority_red_unit_array[$j];
+					if(($red_unit_hp_array[$myUnit]>0)&&($red_unit_array[$myUnit]==1)){
+						echo('<div class="red">['.$battleturn.'] 赤('.$myUnit.')の攻撃</div>');
+						battleLogic($blue_turn_bool,$myUnit,$priority_array[unitDistance($myUnit)][unitLine($myUnit)],unitDistance($myUnit));
 						// 状態保存と対戦者切り替え
 						$tmp_priority_red_unit_num=$j+1;
 						$blue_turn_bool=1;
@@ -163,49 +173,43 @@
 		return $distance[$distance_num];
 	}
 	
+	function unitLine($unit_num){
+		$line_num=0;
+		if($unit_num<3){
+			$line_num=0;
+		}else if($unit_num<6){
+			$line_num=1;
+		}else if($unit_num<9){
+			$line_num=2;
+		}
+		return $line_num;
+	}
+	
 	function battleLogic($blue_turn_bool,$atk_unit_num,$priority_array,$distance){
 		global $blue_unit_array;
 		global $red_unit_array;
 		global $blue_unit_hp_array;
 		global $red_unit_hp_array;
-		global $DAMAGE_ARRAY;
+		global $DAMAGE_EFFECT_ARRAY;
 
 		$tmp_hit_effect=0;
 		$damage=0;
 		
 		for($i=0;$i<count($priority_array);$i++){
 			
-			if($distance=="short"){
-				if($i<3){
-					$tmp_hit_effect=6;
-				}else if($i<6){
-					$tmp_hit_effect=4;
-				}else if($i<9){
-					$tmp_hit_effect=1;
-				}
-			}else if($distance=="middle"){
-				if($i<3){
-					$tmp_hit_effect=4;
-				}else if($i<6){
-					$tmp_hit_effect=4;
-				}else if($i<9){
-					$tmp_hit_effect=4;
-				}
-			}else if($distance=="long"){
-				if($i<3){
-					$tmp_hit_effect=6;
-				}else if($i<6){
-					$tmp_hit_effect=4;
-				}else if($i<9){
-					$tmp_hit_effect=2;
-				}
+			if($i<3){
+				$tmp_hit_effect = $DAMAGE_EFFECT_ARRAY[$distance][2];
+			}else if($i<6){
+				$tmp_hit_effect = $DAMAGE_EFFECT_ARRAY[$distance][1];
+			}else if($i<9){
+				$tmp_hit_effect = $DAMAGE_EFFECT_ARRAY[$distance][0];
 			}
 			
 			if($blue_turn_bool){
 				if($red_unit_hp_array[$priority_array[$i]]>0){
 					// ダメージ数算出
-					$damage = subtraction($blue_turn_bool,unitDistance($priority_array[$i]),$priority_array[$i],$DAMAGE_ARRAY[$tmp_hit_effect]);
-					echo("赤：".$priority_array[$i]."に");
+					$damage = subtraction($blue_turn_bool,unitDistance($priority_array[$i]),$priority_array[$i],$tmp_hit_effect);
+					echo("赤(".$priority_array[$i].")に");
 					echo($damage."のダメージ！");
 					$red_unit_hp_array[$priority_array[$i]] -= $damage;
 					$red_unit_hp_array[$priority_array[$i]] = isDeath($red_unit_hp_array[$priority_array[$i]]);
@@ -215,8 +219,8 @@
 			if(!$blue_turn_bool){
 				if($blue_unit_hp_array[$priority_array[$i]]>0){
 					// ダメージ数算出
-					$damage = subtraction($blue_turn_bool,unitDistance($priority_array[$i]),$priority_array[$i],$DAMAGE_ARRAY[$tmp_hit_effect]);
-					echo("青：".$priority_array[$i]."に");
+					$damage = subtraction($blue_turn_bool,unitDistance($priority_array[$i]),$priority_array[$i],$tmp_hit_effect);
+					echo("青(".$priority_array[$i].")に");
 					echo($damage."のダメージ！");
 					$blue_unit_hp_array[$priority_array[$i]] -= $damage;
 					$blue_unit_hp_array[$priority_array[$i]] = isDeath($blue_unit_hp_array[$priority_array[$i]]);
@@ -241,7 +245,7 @@
 					$tmp_num=$unit_num-1;
 					if($tmp_num>=0){
 						if($red_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
@@ -250,14 +254,14 @@
 					$tmp_num=$unit_num-1;
 					if($tmp_num>=0){
 						if($red_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
-					$tmp_num=$unit_num-1;
+					$tmp_num=$tmp_num-1;
 					if($tmp_num>=0){
 						if($red_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
@@ -271,7 +275,7 @@
 					$tmp_num=$unit_num-1;
 					if($tmp_num>=0){
 						if($blue_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
@@ -280,14 +284,14 @@
 					$tmp_num=$unit_num-1;
 					if($tmp_num>=0){
 						if($blue_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
-					$tmp_num=$unit_num-1;
+					$tmp_num=$tmp_num-1;
 					if($tmp_num>=0){
 						if($blue_unit_hp_array[$tmp_num]>0){
-							echo("前に居る敵に攻撃を防がれた!!ダメージ-1<br>");
+							echo("前に居る敵(".$tmp_num.")に攻撃を防がれた!!ダメージ-1<br>");
 							--$damage;
 						}
 					}
@@ -326,10 +330,10 @@
 				<th class="red">遠</th>
 			</tr>
 			<tr>
-				<td>');
+				<td class="blue">');
 						if($blue_unit_array[2]==1){
 							if($blue_unit_hp_array[2]>0){
-								echo("▲");
+								echo("(2)");
 							}else{
 								echo("×");
 							}
@@ -338,10 +342,10 @@
 						}
 					echo('
 				</td>
-				<td>');
+				<td class="blue">');
 						if($blue_unit_array[1]==1){
 							if($blue_unit_hp_array[1]>0){
-								echo("■");
+								echo("(1)");
 							}else{
 								echo("×");
 							}
@@ -350,11 +354,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[0]==1){
 							if($blue_unit_hp_array[0]>0){
-								echo("●");
+								echo("(0)");
 							}else{
 								echo("×");
 							}
@@ -363,11 +367,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[0]==1){
 							if($red_unit_hp_array[0]>0){
-								echo("●");
+								echo("(0)");
 							}else{
 								echo("×");
 							}
@@ -376,11 +380,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[1]==1){
 							if($red_unit_hp_array[1]>0){
-								echo("■");
+								echo("(1)");
 							}else{
 								echo("×");
 							}
@@ -389,11 +393,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[2]==1){
 							if($red_unit_hp_array[2]>0){
-								echo("▲");
+								echo("(2)");
 							}else{
 								echo("×");
 							}
@@ -404,11 +408,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[5]==1){
 							if($blue_unit_hp_array[5]>0){
-								echo("▲");
+								echo("(5)");
 							}else{
 								echo("×");
 							}
@@ -417,11 +421,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[4]==1){
 							if($blue_unit_hp_array[4]>0){
-								echo("■");
+								echo("(4)");
 							}else{
 								echo("×");
 							}
@@ -430,11 +434,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[3]==1){
 							if($blue_unit_hp_array[3]>0){
-								echo("●");
+								echo("(3)");
 							}else{
 								echo("×");
 							}
@@ -443,11 +447,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[3]==1){
 							if($red_unit_hp_array[3]>0){
-								echo("●");
+								echo("(3)");
 							}else{
 								echo("×");
 							}
@@ -456,11 +460,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[4]==1){
 							if($red_unit_hp_array[4]>0){
-								echo("■");
+								echo("(4)");
 							}else{
 								echo("×");
 							}
@@ -469,11 +473,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[5]==1){
 							if($red_unit_hp_array[5]>0){
-								echo("▲");
+								echo("(5)");
 							}else{
 								echo("×");
 							}
@@ -484,11 +488,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[8]==1){
 							if($blue_unit_hp_array[8]>0){
-								echo("▲");
+								echo("(8)");
 							}else{
 								echo("×");
 							}
@@ -497,11 +501,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[7]==1){
 							if($blue_unit_hp_array[7]>0){
-								echo("■");
+								echo("(7)");
 							}else{
 								echo("×");
 							}
@@ -510,11 +514,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="blue">
 					');
 						if($blue_unit_array[6]==1){
 							if($blue_unit_hp_array[6]>0){
-								echo("●");
+								echo("(6)");
 							}else{
 								echo("×");
 							}
@@ -523,11 +527,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[6]==1){
 							if($red_unit_hp_array[6]>0){
-								echo("●");
+								echo("(6)");
 							}else{
 								echo("×");
 							}
@@ -536,11 +540,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[7]==1){
 							if($red_unit_hp_array[7]>0){
-								echo("■");
+								echo("(7)");
 							}else{
 								echo("×");
 							}
@@ -549,11 +553,11 @@
 						}
 					echo('
 				</td>
-				<td>
+				<td class="red">
 					');
 						if($red_unit_array[8]==1){
 							if($red_unit_hp_array[8]>0){
-								echo("▲");
+								echo("(8)");
 							}else{
 								echo("×");
 							}
