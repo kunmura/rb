@@ -13,9 +13,9 @@
 <![endif]-->
 </head>
 <body>
-<h2>バトル v2(配置でダメージ減少)</h2>
+<h2>バトル v3 test </h2>
 <div id="map">
-	<form method="post" action="result2.php">
+	<form method="post" action="result3.php">
 	<div>
 		<table>
 			<tr>
